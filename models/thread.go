@@ -52,13 +52,13 @@ func (thread *Thread) Posts() (posts []Post, err error) {
 
 // Get all threads
 func Threads() (threads []Thread, err error) {
-	rows, err := db.Db.Query("select id,uuid,body,user_id,thread_id,created_at from threads order by created_at DESC")
+	rows, err := db.Db.Query("select id,uuid,topic,user_id,created_at from threads order by created_at DESC")
 	if err != nil {
 		return
 	}
 	for rows.Next() {
 		thread := Thread{}
-		if err = rows.Scan(&thread.Id, &thread.UserId, &thread.Topic, &thread.CreatedAt); err != nil {
+		if err = rows.Scan(&thread.Id, &thread.Uuid, &thread.Topic, &thread.UserId, &thread.CreatedAt); err != nil {
 			return
 		}
 		threads = append(threads, thread)

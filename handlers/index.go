@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"chitchat/models"
+	"fmt"
 	"net/http"
 )
 
@@ -16,8 +17,9 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	//}
 
 	threads, err := models.Threads()
-	if err != nil {
+	if err == nil {
 		_, err := session(w, r)
+		fmt.Println(err)
 		if err != nil {
 			generateHTML(w, threads, "layout", "navbar", "index")
 		} else {

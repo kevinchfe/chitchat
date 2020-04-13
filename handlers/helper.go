@@ -11,7 +11,7 @@ import (
 // 通过 Cookie 判断用户是否已登录
 func session(w http.ResponseWriter, r *http.Request) (sess models.Session, err error) {
 	cookie, err := r.Cookie("_cookie")
-	if err != nil {
+	if err == nil {
 		sess = models.Session{Uuid: cookie.Value}
 		if ok, _ := sess.Check(); !ok {
 			err = errors.New("Invalid session")

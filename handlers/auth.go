@@ -72,6 +72,7 @@ func Authenticate(w http.ResponseWriter, r *http.Request) {
 // 用户退出
 func Logout(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("_cookie")
+	fmt.Println(cookie)
 	if err != http.ErrNoCookie {
 		fmt.Println("Failed to get cookie")
 		session := models.Session{Uuid: cookie.Value}
