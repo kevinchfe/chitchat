@@ -152,7 +152,7 @@ func (user *User) CreateThread(topic string) (thread Thread, err error) {
 
 // Create a new post to a thread
 func (user *User) CreatePost(thread Thread, body string) (post Post, err error) {
-	sql := "insert into posts (uuid,body,user_id,thread_id,created_at) values (?,?,?,?)"
+	sql := "insert into posts (uuid,body,user_id,thread_id,created_at) values (?,?,?,?,?)"
 	stmt, err := db.Db.Prepare(sql)
 	if err != nil {
 		return
