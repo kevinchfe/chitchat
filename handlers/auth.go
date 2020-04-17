@@ -24,7 +24,7 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 func SignupAccount(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		fmt.Println("Cannot parse form")
+		danger("Cannot parse form")
 	}
 
 	user := models.User{
@@ -34,8 +34,7 @@ func SignupAccount(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := user.Create(); err != nil {
-		fmt.Println(err)
-		fmt.Println("Cannot create user")
+		danger("Cannot create user")
 	} else {
 		fmt.Println("create user success")
 	}
@@ -48,6 +47,7 @@ func Authenticate(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	user, err := models.UserByEmail(r.PostFormValue("email"))
 	if err != nil {
+		danger("Cannot find user")
 		fmt.Println("Cannot find user")
 	}
 	if user.Password == models.Encrypt(r.PostFormValue("password")) {

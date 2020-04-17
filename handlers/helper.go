@@ -5,8 +5,20 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
+	"os"
 )
+
+var logger *log.Logger
+
+func init() {
+	file, err := os.OpenFile("logs/chitchat.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalln("Failed to open log file", err)
+	}
+	logger = log.New(file, "INFO", log.Ldate|log.Ltime|log.Lshortfile)
+}
 
 // 通过 Cookie 判断用户是否已登录
 func session(w http.ResponseWriter, r *http.Request) (sess models.Session, err error) {
@@ -43,4 +55,19 @@ func generateHTML(w http.ResponseWriter, data interface{}, filenames ...string) 
 
 func Version() string {
 	return "0.1"
+}
+
+func info(args ...interface{})  {
+	logger.SetPrefix("INFO ")
+	logger.Println(args)
+}
+
+func danger(args ...interface{})  {
+	logger.SetPrefix("ERROR ")
+	logger.Println(args)
+}
+
+func warning(args ...interface{})  {
+	logger.SetPrefix("WARNING")
+	logger.Println(args)
 }
