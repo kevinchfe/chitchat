@@ -1,19 +1,30 @@
 package handlers
 
 import (
+	. "chitchat/config"
 	"chitchat/models"
 	"errors"
 	"fmt"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+	"time"
 )
 
 var logger *log.Logger
+var config *Configuration
+var localizer *i18n.Localizer
 
 func init() {
+	// 获取全局配置
+	config = LoadConfig()
+
+	// 获取本地化实例
+	localizer = i18n.NewLocalizer(config.LocaleBundle, config.App.Language)
+
 	file, err := os.OpenFile("logs/chitchat.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalln("Failed to open log file", err)
@@ -33,25 +44,21 @@ func session(w http.ResponseWriter, r *http.Request) (sess models.Session, err e
 	return
 }
 
-// 解析 HTML 模板（应对需要传入多个模板文件的情况，避免重复编写模板代码）
-func parseTemplateFiles(filenames ...string) (t *template.Template) {
-	var files []string
-	t = template.New("layout")
-	for _, file := range filenames {
-		files = append(files, fmt.Sprintf("views/%s.html", file))
-	}
-	t = template.Must(t.ParseFiles(files...))
-	return
-}
-
 // 生成响应 HTML
 func generateHTML(w http.ResponseWriter, data interface{}, filenames ...string) {
 	var files []string
 	for _, file := range filenames {
-		files = append(files, fmt.Sprintf("views/%s.html", file))
+		files = append(files, fmt.Sprintf("views/%s/%s.html", config.App.Language, file))
 	}
-	template := template.Must(template.ParseFiles(files...))
+	funcMap := template.FuncMap{"fdate": formatDate}
+	t := template.New("layout").Funcs(funcMap)
+	template := template.Must(t.ParseFiles(files...))
 	template.ExecuteTemplate(w, "layout", data)
+}
+
+func formatDate(t time.Time) string {
+	datetime := "2006-01-02 15:04:05"
+	return t.Format(datetime)
 }
 
 func Version() string {

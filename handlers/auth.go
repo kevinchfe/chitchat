@@ -9,8 +9,7 @@ import (
 // GET /login
 // 登录页面
 func Login(w http.ResponseWriter, r *http.Request) {
-	t := parseTemplateFiles("auth.layout", "navbar", "login")
-	t.Execute(w, nil)
+	generateHTML(w, nil, "auth.layout", "navbar", "login")
 }
 
 // GET /signup
@@ -52,7 +51,6 @@ func Authenticate(w http.ResponseWriter, r *http.Request) {
 	if user.Password == models.Encrypt(r.PostFormValue("password")) {
 		session, err := user.CreateSession()
 		if err != nil {
-			fmt.Println(err)
 			danger(err, "Cannot create session")
 		}
 		cookie := http.Cookie{
@@ -71,7 +69,6 @@ func Authenticate(w http.ResponseWriter, r *http.Request) {
 // 用户退出
 func Logout(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("_cookie")
-	fmt.Println(cookie)
 	if err != http.ErrNoCookie {
 		danger(err, "Failed to get cookie")
 		session := models.Session{Uuid: cookie.Value}
