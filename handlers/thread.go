@@ -45,9 +45,9 @@ func CreateThread(w http.ResponseWriter, r *http.Request) {
 func ReadThread(w http.ResponseWriter, r *http.Request) {
 	vals := r.URL.Query()
 	uuid := vals.Get("id")
-	thread, err := models.ThreadByUuid(uuid)
+	thread, err := models.ThreadByUuid(uuid) // todo 始终不为nil
 	if err != nil {
-		fmt.Println("Cannot read thread")
+		error_message(w, r, "Cannot read thread")
 	} else {
 		_, err := session(w, r)
 		if err != nil {

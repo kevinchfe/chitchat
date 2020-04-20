@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 )
 
 var logger *log.Logger
@@ -57,17 +58,22 @@ func Version() string {
 	return "0.1"
 }
 
-func info(args ...interface{})  {
+func info(args ...interface{}) {
 	logger.SetPrefix("INFO ")
-	logger.Println(args)
+	logger.Println(args...)
 }
 
-func danger(args ...interface{})  {
+func danger(args ...interface{}) {
 	logger.SetPrefix("ERROR ")
-	logger.Println(args)
+	logger.Println(args...)
 }
 
-func warning(args ...interface{})  {
+func warning(args ...interface{}) {
 	logger.SetPrefix("WARNING")
-	logger.Println(args)
+	logger.Println(args...)
+}
+
+func error_message(w http.ResponseWriter, r *http.Request, msg string) {
+	url := []string{"/err?msg=", msg}
+	http.Redirect(w, r, strings.Join(url, ""), 302)
 }

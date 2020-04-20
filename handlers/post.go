@@ -25,7 +25,7 @@ func PostThread(w http.ResponseWriter, r *http.Request) {
 		uuid := r.PostFormValue("uuid")
 		thread, err := models.ThreadByUuid(uuid)
 		if err != nil {
-			fmt.Println("Cannot read thread")
+			error_message(w, r, "Cannot read thread")
 		}
 		if _, err := user.CreatePost(thread, body); err != nil {
 			fmt.Println(err)
